@@ -6,6 +6,7 @@ package colibri;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonElement;
+import colibri.Collector;
 
 public class App {
     String getGreeting() {
@@ -22,7 +23,22 @@ public class App {
         }
     }
 
+    public interface Market {
+        String name;
+        String[] tradePairs;
+    }
+
+    Market[] getMarkets(String settings) {
+
+    }
+
+
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        String settings = "";
+        Market[] markets = getMarkets(settings);
+        for (Market market : markets) {
+            for (String tp : market.tradePairs)
+                Collector t = new Collector();
+        }
     }
 }
