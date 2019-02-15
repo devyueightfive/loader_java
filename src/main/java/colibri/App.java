@@ -3,42 +3,122 @@
  */
 package colibri;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonElement;
-import colibri.Collector;
+import java.io.*;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.LinkedList;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 public class App {
-    String getGreeting() {
-        String myString = "{'a':'1','b':'2'}";
-        JsonParser jp = new JsonParser();
-        JsonElement je = jp.parse(myString);
-        if (je.isJsonObject()) {
-            JsonObject o = je.getAsJsonObject();
-            System.out.println(o.get("a").getAsInt());
-            System.out.println(o.get("b").getAsInt());
-            return o.toString();
-        } else {
-            return "Not Object";
-        }
-    }
-
-    public interface Market {
-        String name;
-        String[] tradePairs;
-    }
-
-    Market[] getMarkets(String settings) {
-
-    }
-
-
     public static void main(String[] args) {
-        String settings = "";
-        Market[] markets = getMarkets(settings);
+        //Initialize application with <settings> (in constructor)
+        App application = new App();
+
+        Market[] markets = application.getMarkets();
+        //for each market start thread to listen tradeURL end point
         for (Market market : markets) {
-            for (String tp : market.tradePairs)
-                Collector t = new Collector();
+            System.out.println(market.name);
+        }
+
+
+//        LinkedList<String> queue = new LinkedList<String>();
+//        //get settings from'settings.json'
+//        //TODO : from settings get path to database to save market data
+//        //TODO: start thread that monitor <queue>
+//
+//        ArrayList<Collector> collectors = new ArrayList<>();
+//        //get market properties from settings
+//        Market[] markets = application.getMarkets();
+        //for each market start thread to listen tradeURL end point
+//        for (Market market : markets) {
+//            for (String tp : market.getTradePairs()) {
+//                Collector t = new Collector(market.getTradeURL(tp), queue);
+//                collectors.add(t);
+//                t.start();
+//            }
+//        }
+//        for (Collector t : collectors) {
+//            try {
+//                t.join();
+//            } catch (Exception ex) {
+//                System.out.println(ex);
+//            }
+//        }
+    }
+
+    private Settings settings;
+
+
+    App() {
+        //Get <settings> as String
+        String settingsString = getSettingsString();
+        //<settings> initialization
+        try {
+            Gson gson = new Gson();
+            this.settings = gson.fromJson(settingsString, Settings.class);
+        } catch (JsonSyntaxException ex) {
+            System.out.println("<Settings> invalid Json syntax : " + ex.toString());
+            System.exit(-1);
         }
     }
+
+    private String getPathToSettings() {
+        String relativePathToSettings = "./settings/settings.json";
+        String pathToProject = Paths.get(".").toAbsolutePath().normalize().toString();
+        try {
+            return Paths.get(pathToProject, relativePathToSettings).toAbsolutePath().normalize().toString();
+        } catch (InvalidPathException ex) {
+            System.out.println("<Settings> invalid path : " + ex.toString());
+            System.exit(-1);
+        }
+        return "";//not reachable
+    }
+
+//    String getPathToDatabase() {
+//        Settings s =
+//    }
+
+
+    //Static class to parse <settings.json>
+    public static class Settings {
+        String pathToDatabase = "";
+        String defaultPathToDatabase = "";
+        Market[] markets = null;
+    }
+
+    //Static class to parse <settings.json>
+    public static class Market {
+        String name = "";
+        String[] tradePairs = null;
+        String tradeURL = "";
+    }
+
+
+    Market[] getMarkets() {
+        return this.settings.markets;
+    }
+
+
+    private String getSettingsString() {
+        //Get path to <settings>
+        String pathToSettings = getPathToSettings();
+        //Get <settings> from the file
+        //Read file char by char using FileReader
+        int c;
+        StringBuilder read = new StringBuilder();
+        try (FileReader fr = new FileReader(pathToSettings)) {
+            while ((c = fr.read()) != -1) {
+                read.append((char) c);
+            }
+        } catch (Exception ex) {
+            System.out.println("FileReader error : " + ex.toString());
+            System.exit(-1);
+        }
+        return read.toString();
+    }
+
+
 }
