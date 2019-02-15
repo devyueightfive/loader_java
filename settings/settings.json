@@ -1,0 +1,15 @@
+{
+  "pathToDatabase": "",
+  "defaultPathToDatabase": "databases/last.h5",
+  "markets": [
+    {
+      "name": "binance.com",
+      "tradePairs": [
+        "btc_usd",
+        "eth_usd",
+        "eth_btc"
+      ],
+      "tradeURL": "wss://stream.binance.com:9443/ws/<symbol>@trade"
+    }
+  ]
+}

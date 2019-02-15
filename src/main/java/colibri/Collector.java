@@ -1,14 +1,15 @@
 package colibri;
 
-import java.util.Queue;
+import java.util.LinkedList;
 
 public class Collector extends Thread {
     private String urlEndPoint;
-    private Queue<String> someQueue;
+    private LinkedList<String> queue;
 
-    public Collector(String urlEndPointToListen, Queue<String> someQueue) {
+    Collector(String urlEndPointToListen, LinkedList<String> someQueue) {
         super();
         this.urlEndPoint = urlEndPointToListen;
+        this.queue = someQueue;
     }
 
     public void run() {
@@ -24,6 +25,6 @@ public class Collector extends Thread {
     }
 
     private void listenEndPoint(String url) {
-
+        //TODO: putDataTo(this.queue);
     }
 }
