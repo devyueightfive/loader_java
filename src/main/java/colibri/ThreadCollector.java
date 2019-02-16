@@ -1,7 +1,9 @@
 package colibri;
 
+import java.lang.Exception;
 import java.util.LinkedList;
-import org.bytedeco.javacpp.hdf5;
+import org.bytedeco.javacpp.*;
+import static org.bytedeco.javacpp.hdf5.*;
 
 public class ThreadCollector extends Thread {
     private String urlEndPoint;

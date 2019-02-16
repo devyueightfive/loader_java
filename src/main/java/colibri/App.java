@@ -35,6 +35,14 @@ public class App {
             }
         }
 
+        System.out.println("\njava.library.path".toUpperCase());
+        String[] properties = System.getProperty("java.library.path").split(":");
+        for (String p : properties) {
+            System.out.println(p);
+        }
+
+        //hdf5Wrapper.run();
+
 
 //        ArrayList<ThreadCollector> collectors = new ArrayList<>();
 //        //get market properties from settings
