@@ -6,41 +6,48 @@ package colibri;
 import java.io.*;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+
 
 public class App {
     public static void main(String[] args) {
         //Initialize application with <settings> (in constructor)
         App application = new App();
 
+        String pathToDatabase = application.getPathToDatabase();
+        System.out.format("Path to database is : %s\n", pathToDatabase);
+        if (pathToDatabase == null) System.exit(-1);
+
+        LinkedList<String> queue = new LinkedList<>();
+        //get settings from'settings.json'
+        //TODO : from settings get path to database to save market data
+        //TODO: start thread that monitor <queue>
+
+
         Market[] markets = application.getMarkets();
         //for each market start thread to listen tradeURL end point
         for (Market market : markets) {
-            System.out.println(market.name);
+            for (String tp : market.tradePairs) {
+                System.out.println(market.name + ":" + tp);
+            }
         }
 
 
-//        LinkedList<String> queue = new LinkedList<String>();
-//        //get settings from'settings.json'
-//        //TODO : from settings get path to database to save market data
-//        //TODO: start thread that monitor <queue>
-//
-//        ArrayList<Collector> collectors = new ArrayList<>();
+//        ArrayList<ThreadCollector> collectors = new ArrayList<>();
 //        //get market properties from settings
 //        Market[] markets = application.getMarkets();
         //for each market start thread to listen tradeURL end point
 //        for (Market market : markets) {
 //            for (String tp : market.getTradePairs()) {
-//                Collector t = new Collector(market.getTradeURL(tp), queue);
+//                ThreadCollector t = new ThreadCollector(market.getTradeURL(tp), queue);
 //                collectors.add(t);
 //                t.start();
 //            }
 //        }
-//        for (Collector t : collectors) {
+//        for (ThreadCollector t : collectors) {
 //            try {
 //                t.join();
 //            } catch (Exception ex) {
@@ -52,11 +59,11 @@ public class App {
     private Settings settings;
 
 
-    App() {
+    private App() {
         //Get <settings> as String
         String settingsString = getSettingsString();
         //<settings> initialization
-        try {
+        try {// using gson from google
             Gson gson = new Gson();
             this.settings = gson.fromJson(settingsString, Settings.class);
         } catch (JsonSyntaxException ex) {
@@ -77,28 +84,53 @@ public class App {
         return "";//not reachable
     }
 
-//    String getPathToDatabase() {
-//        Settings s =
-//    }
-
 
     //Static class to parse <settings.json>
-    public static class Settings {
+    private static class Settings {
         String pathToDatabase = "";
         String defaultPathToDatabase = "";
         Market[] markets = null;
     }
 
     //Static class to parse <settings.json>
-    public static class Market {
+    private static class Market {
         String name = "";
         String[] tradePairs = null;
         String tradeURL = "";
     }
 
 
-    Market[] getMarkets() {
+    private Market[] getMarkets() {
         return this.settings.markets;
+    }
+
+    private String getPathToDatabase() {
+        String result = null;
+        String currentPath = "";
+        String defaultPath = "";
+        //Check correct path to database
+        try {
+            currentPath = Paths.get(this.settings.pathToDatabase).toAbsolutePath().normalize().toString();
+        } catch (InvalidPathException ex) {
+            System.out.format("<Database path> is incorrect: %s\n", ex.toString());
+        }
+        try {
+            defaultPath = Paths.get(this.settings.defaultPathToDatabase).toAbsolutePath().normalize().toString();
+        } catch (Exception ex) {
+            System.out.format("<Default database path> is incorrect: %s\n", ex.toString());
+
+        }
+
+        //Check does database path be a file.
+        result = new File(currentPath).isFile() ? currentPath : (new File(defaultPath).isFile() ? defaultPath : null);
+        try {
+            if (result == null) {
+                throw new IOException("Database path is not defined.");
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+        }
+        return result;
     }
 
 

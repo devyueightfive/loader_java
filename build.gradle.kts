@@ -27,6 +27,9 @@ dependencies {
     //JSON
     implementation("com.google.code.gson:gson:2.8.5")
 
+    //HDF5
+    implementation("org.bytedeco.javacpp-presets:hdf5:1.10.4-1.4.4")
+
 
     // Use JUnit test framework
     testImplementation("junit:junit:4.12")

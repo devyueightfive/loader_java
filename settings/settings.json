@@ -1,6 +1,6 @@
 {
-  "pathToDatabase": "",
-  "defaultPathToDatabase": "databases/last.h5",
+  "pathToDatabase": ".",
+  "defaultPathToDatabase": "database/last.h5",
   "markets": [
     {
       "name": "binance.com",

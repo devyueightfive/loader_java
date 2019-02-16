@@ -1,12 +1,13 @@
 package colibri;
 
 import java.util.LinkedList;
+import org.bytedeco.javacpp.hdf5;
 
-public class Collector extends Thread {
+public class ThreadCollector extends Thread {
     private String urlEndPoint;
     private LinkedList<String> queue;
 
-    Collector(String urlEndPointToListen, LinkedList<String> someQueue) {
+    ThreadCollector(String urlEndPointToListen, LinkedList<String> someQueue) {
         super();
         this.urlEndPoint = urlEndPointToListen;
         this.queue = someQueue;
