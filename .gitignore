@@ -7,3 +7,4 @@ gradle
 
 *.bat
 *.properties
+*.h5

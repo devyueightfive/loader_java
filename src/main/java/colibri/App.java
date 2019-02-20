@@ -13,6 +13,7 @@ import com.google.gson.JsonSyntaxException;
 
 
 public class App {
+
     public static void main(String[] args) {
         //Initialize application with <settings> (in constructor)
         App application = new App();
@@ -23,7 +24,7 @@ public class App {
 
         LinkedList<String> queue = new LinkedList<>();
         //get settings from'settings.json'
-        //TODO : from settings get path to database to save market data
+        //TODO: from settings get path to database to save market data
         //TODO: start thread that monitor <queue>
 
 
@@ -35,13 +36,13 @@ public class App {
             }
         }
 
-        System.out.println("\njava.library.path".toUpperCase());
-        String[] properties = System.getProperty("java.library.path").split(":");
-        for (String p : properties) {
-            System.out.println(p);
-        }
+//        System.out.println("\njava.library.path".toUpperCase());
+//        String[] properties = System.getProperty("java.library.path").split(":");
+//        for (String p : properties) {
+//            System.out.println(p);
+//        }
 
-        //hdf5Wrapper.run();
+        hdf5Wrapper.run();
 
 
 //        ArrayList<ThreadCollector> collectors = new ArrayList<>();

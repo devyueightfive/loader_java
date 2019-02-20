@@ -12,12 +12,16 @@ plugins {
 
     // Apply the application plugin to add support for building an application
     application
+
+    idea
 }
 
-repositories {
-    // Use jcenter for resolving your dependencies.
-    // You can declare any Maven/Ivy/file repository here.
-    jcenter()
+allprojects {
+    repositories {
+        // Use jcenter for resolving your dependencies.
+        // You can declare any Maven/Ivy/file repository here.
+        jcenter()
+    }
 }
 
 dependencies {
@@ -28,7 +32,11 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.5")
 
     //HDF5
-    implementation("org.bytedeco.javacpp-presets:hdf5:1.10.4-1.4.4")
+    //compile("org.bytedeco.javacpp-presets:hdf5:1.10.4-1.4.4")
+    //compile("ncsa.hdf:nar-hdf5-jni:0.1.0")
+    //local hdf5
+    compile(fileTree("libs/slf4j"))
+    compile(fileTree("/usr/local/hdf5/lib"))
 
 
     // Use JUnit test framework
