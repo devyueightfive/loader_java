@@ -5,11 +5,11 @@
     {
       "name": "binance.com",
       "tradePairs": [
-        "btc_usd",
-        "eth_usd",
-        "eth_btc"
+        "eth_btc",
+        "zec_btc",
+        "zec_eth"
       ],
-      "tradeURL": "wss://stream.binance.com:9443/ws/<symbol>@trade"
+      "tradeURL_Template": "wss://stream.binance.com:9443/ws/<symbol>@trade"
     }
   ]
 }

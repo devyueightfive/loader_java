@@ -6,7 +6,9 @@ package colibri;
 import java.io.*;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -27,42 +29,52 @@ public class App {
         //TODO: from settings get path to database to save market data
         //TODO: start thread that monitor <queue>
 
+        //hdf5Wrapper.run();
 
         Market[] markets = application.getMarkets();
-        //for each market start thread to listen tradeURL end point
+
+        /*
+            for each market print <trade pairs> to listen
+        */
         for (Market market : markets) {
             for (String tp : market.tradePairs) {
                 System.out.println(market.name + ":" + tp);
             }
         }
 
-//        System.out.println("\njava.library.path".toUpperCase());
-//        String[] properties = System.getProperty("java.library.path").split(":");
-//        for (String p : properties) {
-//            System.out.println(p);
-//        }
+        /*
+            Collect Threads to the array.
+         */
+        List<ThreadCollector> collectors = new ArrayList<>();
+        /*
+            for each market start thread to listen tradeURL end point
+        */
+        for (Market market : markets) {
+            for (String tp : market.tradePairs) {
+                String tradeURL = Market.getTradeURL(market.tradeURL_Template, tp);
+                ThreadCollector t = new ThreadCollector(tradeURL, queue);
+                collectors.add(t);
+                t.start();
+            }
+        }
 
-        hdf5Wrapper.run();
+
+        /*
+            End of program.
+         */
 
 
-//        ArrayList<ThreadCollector> collectors = new ArrayList<>();
-//        //get market properties from settings
-//        Market[] markets = application.getMarkets();
-        //for each market start thread to listen tradeURL end point
-//        for (Market market : markets) {
-//            for (String tp : market.getTradePairs()) {
-//                ThreadCollector t = new ThreadCollector(market.getTradeURL(tp), queue);
-//                collectors.add(t);
-//                t.start();
-//            }
-//        }
-//        for (ThreadCollector t : collectors) {
-//            try {
-//                t.join();
-//            } catch (Exception ex) {
-//                System.out.println(ex);
-//            }
-//        }
+        /*
+           Waiting the threads (WebSocket listeners) endings.
+        */
+        for (ThreadCollector t : collectors) {
+            try {
+                t.join();
+            } catch (Exception ex) {
+                System.out.println(ex);
+                System.exit(0);
+            }
+        }
     }
 
     private Settings settings;
@@ -77,7 +89,7 @@ public class App {
             this.settings = gson.fromJson(settingsString, Settings.class);
         } catch (JsonSyntaxException ex) {
             System.out.println("<Settings> invalid Json syntax : " + ex.toString());
-            System.exit(-1);
+            System.exit(1);
         }
     }
 
@@ -105,7 +117,11 @@ public class App {
     private static class Market {
         String name = "";
         String[] tradePairs = null;
-        String tradeURL = "";
+        String tradeURL_Template = "";
+
+        public static String getTradeURL(String URL_Template, String tp) {
+            return URL_Template.replace("<symbol>", tp.replace("_", ""));
+        }
     }
 
 
