@@ -17,8 +17,8 @@ public class ThreadCollector extends Thread {
 
     ThreadCollector(String urlEndPointToListen, LinkedList<String> someQueue) {
         super();
-        this.urlEndPoint = urlEndPointToListen;
-        this.queue = someQueue;
+        urlEndPoint = urlEndPointToListen;
+        queue = someQueue;
 
         /*
             To show URL

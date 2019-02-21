@@ -36,7 +36,7 @@ dependencies {
     //compile("org.bytedeco.javacpp-presets:hdf5:1.10.4-1.4.4")
     //compile("ncsa.hdf:nar-hdf5-jni:0.1.0")
     //local hdf5
-    //compile(fileTree("libs/slf4j"))
+    compile(fileTree("libs/slf4j"))
     compile(fileTree("/usr/local/hdf5/lib"))
 
 

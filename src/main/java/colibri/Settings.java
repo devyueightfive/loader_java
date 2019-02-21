@@ -5,7 +5,6 @@ import com.google.gson.JsonSyntaxException;
 
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 
@@ -31,7 +30,6 @@ class Settings {
     //Static class to parse <settingsTemplate.json>
     static class SettingsTemplate {
         String pathToDatabase = "";
-        String defaultPathToDatabase = "";
         Market[] markets = null;
     }
 
@@ -46,40 +44,13 @@ class Settings {
         }
     }
 
+    String getPathToDatabase() {
+        return settingsTemplate.pathToDatabase;
+    }
 
     Market[] getMarkets() {
         return this.settingsTemplate.markets;
     }
-
-    String getPathToDatabase() {
-        String result;
-        String currentPath = "";
-        String defaultPath = "";
-        //Check correct path to database
-        try {
-            currentPath = Paths.get(this.settingsTemplate.pathToDatabase).toAbsolutePath().normalize().toString();
-        } catch (InvalidPathException ex) {
-            System.out.format("<Database path> is incorrect: %s\n", ex.toString());
-        }
-        try {
-            defaultPath = Paths.get(this.settingsTemplate.defaultPathToDatabase).toAbsolutePath().normalize().toString();
-        } catch (Exception ex) {
-            System.out.format("<Default database path> is incorrect: %s\n", ex.toString());
-
-        }
-
-        //Check does database path be a file.
-        result = new File(currentPath).isFile() ? currentPath : (new File(defaultPath).isFile() ? defaultPath : null);
-        try {
-            if (result == null) {
-                throw new IOException("Database path is not defined.");
-            }
-        } catch (Exception ex) {
-            System.out.println(ex.toString());
-        }
-        return result;
-    }
-
 
     private String getSettingsString() {
         //Get path to <settingsTemplate>
@@ -93,21 +64,28 @@ class Settings {
                 read.append((char) c);
             }
         } catch (Exception ex) {
-            System.out.println("FileReader error : " + ex.toString());
-            System.exit(-1);
+            System.out.println("Settings [getSettingsString:FileReader] error : " + ex.toString());
+            System.exit(1);
         }
         return read.toString();
     }
 
     private String getPathToSettings() {
-        String relativePathToSettings = "./settingsTemplate/settingsTemplate.json";
+        String relativePathToSettings = "./settings/settings.json";
         String pathToProject = Paths.get(".").toAbsolutePath().normalize().toString();
         try {
-            return Paths.get(pathToProject, relativePathToSettings).toAbsolutePath().normalize().toString();
+            String path = Paths.get(pathToProject, relativePathToSettings)
+                    .toAbsolutePath().normalize().toString();
+            if (new File(path).isFile()) {
+                return path;
+            } else {
+                System.out.println("There is no setting file " + relativePathToSettings + ".");
+                System.exit(1);
+            }
         } catch (InvalidPathException ex) {
             System.out.println("<SettingsTemplate> invalid path : " + ex.toString());
-            System.exit(-1);
+            System.exit(1);
         }
-        return "";//not reachable
+        return "";
     }
 }
