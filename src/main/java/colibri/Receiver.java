@@ -1,21 +1,21 @@
 package colibri;
 
 import java.lang.Exception;
-import java.util.LinkedList;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 
-public class ThreadCollector extends Thread {
+public class Receiver extends Thread {
     private String urlEndPoint;
-    private LinkedList<String> queue;
+    private Vector<String> queue;
 
-    ThreadCollector(String urlEndPointToListen, LinkedList<String> someQueue) {
+    Receiver(String urlEndPointToListen, Vector<String> someQueue) {
         super();
         urlEndPoint = urlEndPointToListen;
         queue = someQueue;
@@ -23,14 +23,15 @@ public class ThreadCollector extends Thread {
         /*
             To show URL
         */
-        System.out.println(this.getName() + " Listening ..." + this.urlEndPoint);
+//        System.out.println(this.getName() + " Listening ..." + this.urlEndPoint);
     }
 
+    @Override
     public void run() {
-        this.listenEndPoint(urlEndPoint);
+        this.listen(urlEndPoint);
     }
 
-    private void listenEndPoint(String url) {
+    private void listen(String url) {
         String myName = this.getName();
         WebSocket.Listener listener = new WebSocket.Listener() {
             List<CharSequence> parts = new ArrayList<>();
@@ -38,7 +39,7 @@ public class ThreadCollector extends Thread {
 
             @Override
             public void onOpen(WebSocket webSocket) {
-                System.out.println(myName + " CONNECTED.");
+                System.out.println(myName + " CONNECTED to " + url);
                 WebSocket.Listener.super.onOpen(webSocket);
             }
 
@@ -58,7 +59,8 @@ public class ThreadCollector extends Thread {
             }
 
             void processWholeParts(List parts) {
-                System.out.println(parts.toString());
+                String item = parts.toString();
+                queue.add(item);
             }
         };
 
@@ -75,6 +77,5 @@ public class ThreadCollector extends Thread {
             }
         }
 
-        //TODO: putDataTo(this.queue);
     }
 }
