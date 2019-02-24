@@ -125,7 +125,7 @@ public class Database {
 
     private static void makePreConditionsWithGroup(String group, long fileId) {
         try {
-            long groupId = -1;
+            long groupId;
             try {
                 groupId = H5.H5Gopen(fileId, group, H5P_DEFAULT);
             } catch (HDF5LibraryException ex) {
@@ -140,6 +140,22 @@ public class Database {
             System.exit(1);
         }
 
+    }
+
+    private static void makeTable(String group, long fileId) {
+        try {
+            long groupId;
+            try {
+                groupId = H5.H5Gopen(fileId, group, H5P_DEFAULT);
+                H5.H5Tcreate();
+            } catch (HDF5LibraryException ex) {
+                System.out.println("Group " + group + " is created.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("makeTable :" + e.toString());
+            System.exit(1);
+        }
     }
 
 }

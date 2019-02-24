@@ -2,7 +2,8 @@ package colibri;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import colibri.Settings.Market;
 
@@ -16,9 +17,8 @@ public class App {
         var settings = new Settings();
         Database.makePreConditions(settings);
 
-        var queue = new Vector<String>();
-        //TODO: start thread that monitor <queue> for save data
-
+        Queue<String> queue = new ConcurrentLinkedQueue<>();
+        //
         Saver saver = new Saver("", queue);
         saver.start();
 

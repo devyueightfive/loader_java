@@ -1,29 +1,25 @@
 package colibri;
 
 import java.lang.Exception;
+import java.net.ConnectException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
+import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 
 public class Receiver extends Thread {
     private String urlEndPoint;
-    private Vector<String> queue;
+    private Queue<String> queue;
 
-    Receiver(String urlEndPointToListen, Vector<String> someQueue) {
+    Receiver(String urlEndPointToListen, Queue<String> someQueue) {
         super();
         urlEndPoint = urlEndPointToListen;
         queue = someQueue;
-
-        /*
-            To show URL
-        */
-//        System.out.println(this.getName() + " Listening ..." + this.urlEndPoint);
     }
 
     @Override
@@ -72,7 +68,8 @@ public class Receiver extends Thread {
             try {
                 ws.join();
             } catch (Exception ex) {
-                System.out.println("My error: " + ex.toString());
+//                ex.printStackTrace();
+                System.out.println("Websocket error: " + ex.toString());
                 System.exit(1);
             }
         }
